@@ -33,7 +33,7 @@
   .book-card{
     position:relative;flex:0 0 auto;width:var(--cw);height:var(--ch);border-radius:0 12px 12px 0; /* 左侧直角（书脊贴边）右侧12px圆角 */
     overflow:hidden;cursor:pointer;background:var(--card);transform-origin:center center;
-    box-shadow:5px 6px 0 -1px #e9e2d0,0 18px 44px rgba(22,11,4,.38),0 6px 16px rgba(22,11,4,.22); /* 纸张厚度块(米色slab偏右下) + 大范围高模糊深棕柔和投影38%，禁止生硬黑影 */
+    box-shadow:0 18px 44px rgba(22,11,4,.38),0 6px 16px rgba(22,11,4,.22); /* 大范围高模糊深棕柔和投影 38% + 近距小投影，禁止生硬黑影 */
     transition:transform .4s cubic-bezier(.22,.61,.36,1),opacity .4s cubic-bezier(.22,.61,.36,1);
     will-change:transform,opacity;
   }
@@ -57,21 +57,9 @@
       rgba(96,76,54,.22) 2px 3px, /* 接缝1 */
       #f6f2e8 3px 5px,            /* rect2（与 rect1 等宽） */
       rgba(96,76,54,.22) 5px 6px, /* 接缝2 */
-      #fdfbf7 6px calc(100% - 4px),
-      #eee7d6 calc(100% - 4px) calc(100% - 1.5px),
-      #d9cfb9 calc(100% - 1.5px) 100%); /* rect3（最宽），右缘渐变压暗=书页折口阴影 */
-    /* 不用 inset box-shadow：Chromium 下会异常罩暗整块区域 */}
-  /* 纸张厚度：右侧书口(fore-edge)一叠纸页边——细密横线模拟纸张层叠，与左侧书脊呼应 */
-  .book-card .pages{position:absolute;top:3px;bottom:3px;right:0;width:9px;z-index:3;pointer-events:none;
-    border-radius:0 11px 11px 0;
-    background:
-      linear-gradient(90deg,rgba(40,24,10,.22) 0 1.5px,rgba(40,24,10,0) 1.5px),
-      repeating-linear-gradient(0deg,#f8f4eb 0 1px,#e7e0ce 1px 2.4px)}
-  /* 顶部/底部书口纸页边（极细堆叠线），强化“本子”观感 */
-  .book-card .pg-top{position:absolute;left:4px;right:9px;top:0;height:4px;z-index:3;pointer-events:none;
-    background:repeating-linear-gradient(90deg,#f8f4eb 0 1px,#e7e0ce 1px 2.4px)}
-  .book-card .pg-bot{position:absolute;left:4px;right:9px;bottom:0;height:4px;z-index:3;pointer-events:none;
-    background:repeating-linear-gradient(90deg,#f8f4eb 0 1px,#e7e0ce 1px 2.4px)}
+      #fdfbf7 6px 100%);          /* rect3（最宽） */
+    box-shadow:inset -2px 0 3px rgba(40,24,10,.16),inset 1.5px 0 2px rgba(255,255,255,.85)}
+  /* 硬壳封面边缘高光：1px 浅白半透明描边（伪元素画在封面之上，不改变布局尺寸） */
   /* ===== Reader ===== */
   #readerWrap{position:fixed;inset:0;display:none;flex-direction:column;background:linear-gradient(rgba(10,7,4,.42),rgba(10,7,4,.42)),var(--shelfbg) center/cover no-repeat;background-color:#0d0a07}
   #bar{height:46px;flex:0 0 46px;display:flex;align-items:center;gap:12px;
@@ -160,11 +148,7 @@
       if (COVERS[i]) img.src = COVERS[i];
       cv.appendChild(img);
       var sp = document.createElement("div"); sp.className = "spine";
-      var pg = document.createElement("div"); pg.className = "pages";
-      var pgt = document.createElement("div"); pgt.className = "pg-top";
-      var pgb = document.createElement("div"); pgb.className = "pg-bot";
-      card.appendChild(cv); card.appendChild(sp); card.appendChild(pg);
-      card.appendChild(pgt); card.appendChild(pgb); /* 封面中文已移除；新增纸页厚度层 */
+      card.appendChild(cv); card.appendChild(sp); /* 封面中文已按要求移除 */
       track.appendChild(card); cards.push(card);
     })(i);
   }
