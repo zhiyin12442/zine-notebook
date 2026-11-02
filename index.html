@@ -48,15 +48,15 @@
   .book-card .cap{position:absolute;left:0;right:0;bottom:0;padding:12px 14px}
   .book-card .cap .t{font-size:17px;font-weight:800;text-shadow:0 2px 6px rgba(0,0,0,.8)}
   .book-card .cap .s{font-size:11px;color:#e9d9bd;opacity:.85;margin-top:2px;letter-spacing:.5px}
-  /* 左侧书页封口（对标实体书）：距边4px 的 7px 米白竖条85% + 内部2条纸页压痕线 + 最左1px纯白高光 */
-  .book-card .spine{position:absolute;top:0;bottom:0;left:4px;width:7px;z-index:3;pointer-events:none;
-    background:rgba(253,251,247,.85);border-radius:0 2px 2px 0}
-  .book-card .spine .hl{position:absolute;left:0;top:0;bottom:0;width:1px;
-    background:rgba(255,255,255,.95)}            /* 高光边缘：最左1px纯白，模拟光线折射 */
-  .book-card .spine .pg{position:absolute;top:5px;bottom:5px;width:1px;
-    background:rgba(74,52,32,.38)}               /* 纸张分层：极细深棕压痕线 */
-  .book-card .spine .pg1{right:3.5px}
-  .book-card .spine .pg2{right:1.5px}
+  /* 左侧书页封口（严格对标参考图）：贴边整条宽书脊（约9%卡宽），四层从左到右：
+     1px白色高光 → 细密纸页压痕线群（占书脊左侧约1/3，模拟一页页纸的叠口）→ 大面积米白纸面(#fdfbf7) → 右缘内凹阴影分隔封面 */
+  .book-card .spine{position:absolute;top:0;bottom:0;left:0;width:clamp(16px,9%,26px);z-index:3;
+    pointer-events:none;border-radius:11px 0 0 11px;
+    background:
+      linear-gradient(90deg,rgba(255,255,255,.95) 0 1px,rgba(255,255,255,0) 1px) no-repeat 0 0/1px 100%,
+      repeating-linear-gradient(90deg,rgba(96,76,54,.17) 0 1px,rgba(96,76,54,0) 1px 3.5px) no-repeat 3px 0/36% 100%,
+      linear-gradient(90deg,#f2ede2 0,#fdfbf7 30%,#fcf9f2 76%,#efe9db 92%,#e4ddcc 100%);
+    box-shadow:inset -2px 0 3px rgba(40,24,10,.16),inset 1.5px 0 2px rgba(255,255,255,.85)}
   /* 右侧厚度：1.5px 白色细线，模拟封底厚度 */
   .book-card .edge.r{position:absolute;top:2px;bottom:2px;right:2px;width:1.5px;border-radius:2px;
     background:rgba(255,255,255,.65);z-index:3;pointer-events:none}
@@ -156,10 +156,6 @@
       cap.querySelector(".t").textContent = TITLES[i] || ("笔记本 " + (i+1));
       cap.querySelector(".s").textContent = SUBS[i] || "";
       var sp = document.createElement("div"); sp.className = "spine";
-      var hl = document.createElement("i"); hl.className = "hl";
-      var p1 = document.createElement("i"); p1.className = "pg pg1";
-      var p2 = document.createElement("i"); p2.className = "pg pg2";
-      sp.appendChild(hl); sp.appendChild(p1); sp.appendChild(p2);
       var eR = document.createElement("div"); eR.className = "edge r";
       card.appendChild(cv); card.appendChild(veil); card.appendChild(cap);
       card.appendChild(sp); card.appendChild(eR);
