@@ -52,19 +52,14 @@
      1px白色高光 → 细密纸页压痕线群（占书脊左侧约1/3，模拟一页页纸的叠口）→ 大面积米白纸面(#fdfbf7) → 右缘内凹阴影分隔封面 */
   .book-card .spine{position:absolute;top:0;bottom:0;left:0;width:clamp(16px,9%,26px);z-index:3;
     pointer-events:none;border-radius:0; /* 左侧上下角为直角 */
-    background:
-      linear-gradient(90deg,rgba(255,255,255,.95) 0 1px,rgba(255,255,255,0) 1px) no-repeat 0 0/1px 100%,
-      /* 压痕线：固定且仅 4 条（x=3,6,9,12px 各1px） */
-      linear-gradient(90deg,
-        rgba(96,76,54,.20) 3px 4px,rgba(96,76,54,0) 4px 6px,
-        rgba(96,76,54,.20) 6px 7px,rgba(96,76,54,0) 7px 9px,
-        rgba(96,76,54,.20) 9px 10px,rgba(96,76,54,0) 10px 12px,
-        rgba(96,76,54,.20) 12px 13px,rgba(96,76,54,0) 13px 100%) no-repeat 0 0/100% 100%,
-      linear-gradient(90deg,#f2ede2 0,#fdfbf7 30%,#fcf9f2 76%,#efe9db 92%,#e4ddcc 100%);
+    background:linear-gradient(90deg,
+      #efe9dc 0 2px,              /* rect1（窄） */
+      rgba(96,76,54,.22) 2px 3px, /* 接缝1 */
+      #f6f2e8 3px 5px,            /* rect2（与 rect1 等宽） */
+      rgba(96,76,54,.22) 5px 6px, /* 接缝2 */
+      #fdfbf7 6px 100%);          /* rect3（最宽） */
     box-shadow:inset -2px 0 3px rgba(40,24,10,.16),inset 1.5px 0 2px rgba(255,255,255,.85)}
   /* 硬壳封面边缘高光：1px 浅白半透明描边（伪元素画在封面之上，不改变布局尺寸） */
-  .book-card::after{content:"";position:absolute;inset:0;border:1px solid rgba(255,255,255,.30);
-    border-radius:0 12px 12px 0;z-index:4;pointer-events:none}
   /* ===== Reader ===== */
   #readerWrap{position:fixed;inset:0;display:none;flex-direction:column;background:linear-gradient(rgba(10,7,4,.42),rgba(10,7,4,.42)),var(--shelfbg) center/cover no-repeat;background-color:#0d0a07}
   #bar{height:46px;flex:0 0 46px;display:flex;align-items:center;gap:12px;
@@ -152,14 +147,8 @@
       img.draggable = false; img.alt = TITLES[i] || ("笔记本 " + (i+1));
       if (COVERS[i]) img.src = COVERS[i];
       cv.appendChild(img);
-      var veil = document.createElement("div"); veil.className = "veil";
-      var cap = document.createElement("div"); cap.className = "cap";
-      cap.innerHTML = '<div class="t"></div><div class="s"></div>';
-      cap.querySelector(".t").textContent = TITLES[i] || ("笔记本 " + (i+1));
-      cap.querySelector(".s").textContent = SUBS[i] || "";
       var sp = document.createElement("div"); sp.className = "spine";
-      card.appendChild(cv); card.appendChild(veil); card.appendChild(cap);
-      card.appendChild(sp);
+      card.appendChild(cv); card.appendChild(sp); /* 封面中文已按要求移除 */
       track.appendChild(card); cards.push(card);
     })(i);
   }
