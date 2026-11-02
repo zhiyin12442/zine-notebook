@@ -33,14 +33,14 @@
   .book-card{
     position:relative;flex:0 0 auto;width:var(--cw);height:var(--ch);border-radius:12px;
     overflow:hidden;cursor:pointer;background:var(--card);transform-origin:center center;
-    box-shadow:3px 8px 20px rgba(24,13,5,.30); /* 柔和深棕投影：右3px 下8px 模糊20px 30% */
+    box-shadow:0 18px 44px rgba(22,11,4,.38),0 6px 16px rgba(22,11,4,.22); /* 大范围高模糊深棕柔和投影 38% + 近距小投影，禁止生硬黑影 */
     transition:transform .4s cubic-bezier(.22,.61,.36,1),opacity .4s cubic-bezier(.22,.61,.36,1);
     will-change:transform,opacity;
   }
   .book-card.is-active{transform:scale(1) rotate(0deg);opacity:1;z-index:2}
   .book-card.is-active:hover{transform:scale(1.02) rotate(0deg)}
-  .book-card.is-left{transform:scale(.9) rotate(-2deg);opacity:.8}   /* 左侧：90% / 80% / 左旋2度 */
-  .book-card.is-right{transform:scale(.9) rotate(2deg);opacity:.8}   /* 右侧：90% / 80% / 右旋2度 */
+  .book-card.is-left{transform:scale(.88) rotate(-2.5deg);opacity:1}  /* 左侧：88% / 左旋2.5度 / 透明度不降低 */
+  .book-card.is-right{transform:scale(.88) rotate(2.5deg);opacity:1}  /* 右侧：88% / 右旋2.5度 / 透明度不降低 */
   .book-card .cover{position:absolute;inset:0}
   .book-card .cover img{width:100%;height:100%;object-fit:cover;display:block;
     pointer-events:none;-webkit-user-drag:none;user-select:none}
@@ -48,11 +48,21 @@
   .book-card .cap{position:absolute;left:0;right:0;bottom:0;padding:12px 14px}
   .book-card .cap .t{font-size:17px;font-weight:800;text-shadow:0 2px 6px rgba(0,0,0,.8)}
   .book-card .cap .s{font-size:11px;color:#e9d9bd;opacity:.85;margin-top:2px;letter-spacing:.5px}
-  /* 书页厚度：左右各一条 3px 白色竖线，50% 透明度，距卡片边缘 2px，覆盖在封面之上 */
-  .book-card .edge{position:absolute;top:2px;bottom:2px;width:3px;border-radius:2px;
-    background:rgba(255,255,255,.5);z-index:3;pointer-events:none}
-  .book-card .edge.l{left:2px}
-  .book-card .edge.r{right:2px}
+  /* 左侧书页封口（对标实体书）：距边4px 的 7px 米白竖条85% + 内部2条纸页压痕线 + 最左1px纯白高光 */
+  .book-card .spine{position:absolute;top:0;bottom:0;left:4px;width:7px;z-index:3;pointer-events:none;
+    background:rgba(253,251,247,.85);border-radius:0 2px 2px 0}
+  .book-card .spine .hl{position:absolute;left:0;top:0;bottom:0;width:1px;
+    background:rgba(255,255,255,.95)}            /* 高光边缘：最左1px纯白，模拟光线折射 */
+  .book-card .spine .pg{position:absolute;top:5px;bottom:5px;width:1px;
+    background:rgba(74,52,32,.38)}               /* 纸张分层：极细深棕压痕线 */
+  .book-card .spine .pg1{right:3.5px}
+  .book-card .spine .pg2{right:1.5px}
+  /* 右侧厚度：1.5px 白色细线，模拟封底厚度 */
+  .book-card .edge.r{position:absolute;top:2px;bottom:2px;right:2px;width:1.5px;border-radius:2px;
+    background:rgba(255,255,255,.65);z-index:3;pointer-events:none}
+  /* 硬壳封面边缘高光：1px 浅白半透明描边（伪元素画在封面之上，不改变布局尺寸） */
+  .book-card::after{content:"";position:absolute;inset:0;border:1px solid rgba(255,255,255,.30);
+    border-radius:12px;z-index:4;pointer-events:none}
   /* ===== Reader ===== */
   #readerWrap{position:fixed;inset:0;display:none;flex-direction:column;background:linear-gradient(rgba(10,7,4,.42),rgba(10,7,4,.42)),var(--shelfbg) center/cover no-repeat;background-color:#0d0a07}
   #bar{height:46px;flex:0 0 46px;display:flex;align-items:center;gap:12px;
@@ -145,10 +155,14 @@
       cap.innerHTML = '<div class="t"></div><div class="s"></div>';
       cap.querySelector(".t").textContent = TITLES[i] || ("笔记本 " + (i+1));
       cap.querySelector(".s").textContent = SUBS[i] || "";
-      var eL = document.createElement("div"); eL.className = "edge l";
+      var sp = document.createElement("div"); sp.className = "spine";
+      var hl = document.createElement("i"); hl.className = "hl";
+      var p1 = document.createElement("i"); p1.className = "pg pg1";
+      var p2 = document.createElement("i"); p2.className = "pg pg2";
+      sp.appendChild(hl); sp.appendChild(p1); sp.appendChild(p2);
       var eR = document.createElement("div"); eR.className = "edge r";
       card.appendChild(cv); card.appendChild(veil); card.appendChild(cap);
-      card.appendChild(eL); card.appendChild(eR);
+      card.appendChild(sp); card.appendChild(eR);
       track.appendChild(card); cards.push(card);
     })(i);
   }
